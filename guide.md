@@ -93,6 +93,42 @@ This is the heart of the system. It loads automatically at the start of each Cla
 
 Divide memory into four types of files:
 
+### Memory classification and relevance
+
+Every file in `memory/` should have YAML frontmatter with two fields:
+
+```yaml
+---
+type: fact | preference | rule | project | person
+relevance: high | medium | low
+last_reviewed: 2026-03-15
+---
+```
+
+**Type** classifies what kind of memory it is:
+
+| Type | What it captures | Example |
+|------|-----------------|---------|
+| `fact` | Stable information about the world | Professional context, glossary |
+| `preference` | How you like things done | Communication style, tool choices |
+| `rule` | Instructions the AI must follow | Update protocol, security rules |
+| `project` | An active or past project | Code projects, creative work |
+| `person` | Someone relevant to your context | Family, collaborators, clients |
+
+**Relevance** signals how important this file is for current sessions:
+
+| Level | Meaning | AI behavior |
+|-------|---------|-------------|
+| `high` | Essential for most sessions | Always load when relevant |
+| `medium` | Useful in specific contexts | Load when the topic comes up |
+| `low` | Historical or rarely needed | Candidate for archival |
+
+**Last reviewed** is a date that helps you track freshness. During periodic maintenance, ask the AI: *"Review all memory/ files and flag any where `last_reviewed` is older than 3 months."*
+
+This is the manual equivalent of importance scoring and memory decay in automated systems — without running any code. The AI reads the frontmatter, prioritizes `high` relevance files, and you periodically prune `low` relevance entries to keep context lean.
+
+---
+
 ### `glossary.md` — Internal vocabulary
 
 ```markdown
@@ -124,6 +160,11 @@ Divide memory into four types of files:
 One file per relevant person (partner, children, collaborators, frequent clients, etc.).
 
 ```markdown
+---
+type: fact
+relevance: high
+last_reviewed: 2026-03-15
+---
 # Full Name
 
 **Also known as:** [nickname]
@@ -148,6 +189,11 @@ One file per relevant person (partner, children, collaborators, frequent clients
 ### `projects/[project].md` — Active projects
 
 ```markdown
+---
+type: project
+relevance: high
+last_reviewed: 2026-03-15
+---
 # Project Name
 
 **Codename:** [short name for use in conversations]
@@ -274,15 +320,31 @@ Obsidian's `[[wikilinks]]` are not just a navigation convenience — they are th
 
 ### The `## Links relacionados` pattern
 
-At the end of each content note, add a section with links to related notes:
+At the end of each content note, add a section with links to related notes. Each link should include a **relationship verb** that tells the AI (and you) *how* the notes connect, not just *that* they connect:
 
 ```markdown
 ## Links relacionados
 
-- [[Note A]] — why this note connects
-- [[Note B]] — what the relationship is
-- [[Note C]] — the specific angle of relevance
+- [[Note A]] — extends: develops the same argument further
+- [[Note B]] — contradicts: presents an opposing view
+- [[Note C]] — supports: provides evidence for the same thesis
+- [[Note D]] — source: research that feeds this note
+- [[Note E]] — applies: where this concept is used in practice
 ```
+
+### Relationship types
+
+Use these verbs to classify links. You don't need to be rigid — a brief annotation is always better than none — but consistent verbs make the graph meaningful:
+
+| Verb | Meaning | Example |
+|------|---------|---------|
+| `extends` | Develops the same idea further | A philosophy essay linking to a deeper treatment |
+| `supports` | Provides evidence or backing | Research linking to the thesis it supports |
+| `contradicts` | Presents an opposing or tension view | Two notes with incompatible conclusions |
+| `source` | Raw material that feeds this note | Research → creative writing chapter |
+| `applies` | Where a concept is used in practice | A theory → a character who embodies it |
+| `part_of` | Component of a larger whole | A chapter → the novel it belongs to |
+| `related` | General thematic connection | Default when the relationship is loose |
 
 The brief annotation after each link is important. It tells both you and the AI *why* the connection exists, not just *that* it exists. A link without context is noise; a link with a one-line reason is signal.
 
@@ -347,6 +409,8 @@ Beyond session-by-session updates, schedule occasional full-vault reviews. Ask t
 - **Update `ContextSummary.md` files** — especially after adding new notes to a folder
 - **Flag stale information** — projects marked "active" that haven't been touched in months
 - **Identify orphan notes** — files with no incoming or outgoing links
+- **Review memory relevance** — check `last_reviewed` dates in `memory/` frontmatter, downgrade `relevance` for entries that haven't been relevant in months, and archive or remove `low` relevance files that no longer serve current context
+- **Strengthen link types** — upgrade vague `related` links to more specific verbs (`extends`, `supports`, `contradicts`, etc.) as the AI learns more about your vault
 
 This kind of structural maintenance is tedious for humans but trivial for an AI with file access. A single session can add hundreds of links and bring every summary file up to date.
 
