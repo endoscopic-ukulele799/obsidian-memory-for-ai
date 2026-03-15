@@ -445,6 +445,60 @@ Once the links exist, Obsidian's graph view becomes a map of your intellectual l
 ### Claude Code (CLI)
 Place `CLAUDE.md` in the project's working directory. Claude loads it automatically at the start of every session. For coding projects, this is the most seamless integration.
 
+### Working from a different project directory
+
+Claude Code has a limitation: it loads `CLAUDE.md` from the current working directory. If you're working on a coding project in `~/projects/my-app/`, it won't automatically read your vault's `CLAUDE.md`.
+
+There are three ways to solve this, from simplest to most powerful:
+
+**Option 1: Global instructions (no code, works today)**
+
+Create `~/.claude/CLAUDE.md` — a lightweight global instructions file that Claude Code loads in *every* session regardless of working directory. Keep it short (30–50 lines) with:
+
+- Your identity basics (name, role, location)
+- The absolute path to your vault
+- An instruction to read vault files when context is needed
+- Your interaction preferences
+
+```markdown
+# Global context
+
+## Identity
+- [Name], [role], [location]
+
+## Obsidian vault (memory system)
+My knowledge base and AI memory lives at:
+`~/path/to/your/obsidian/vault/`
+
+When I mention "the vault", "my notes", or reference people/projects by short names,
+read the relevant files from that path. Key entry points:
+- CLAUDE.md — full personal context
+- memory/ContextSummary.md — what to load first
+- memory/glossary.md — internal vocabulary
+- TASKS.md — current tasks
+
+## Interaction preferences
+- [Your preferences here]
+```
+
+The vault's full `CLAUDE.md` stays in the vault for sessions where the vault *is* the working directory. The global file is a pointer that says "my memory lives over there — go read it when you need it."
+
+**Option 2: Symlinks (simple, slightly fragile)**
+
+Create a symlink from each project to your vault's `CLAUDE.md`:
+
+```bash
+ln -s ~/path/to/vault/CLAUDE.md ~/projects/my-app/CLAUDE.md
+```
+
+The downside: symlinks can break if paths change, and you'll have a `CLAUDE.md` in every project directory.
+
+**Option 3: MCP server / plugin (most powerful, requires code)**
+
+Package the memory system as a local MCP server that exposes tools like `memory_read`, `memory_search`, `memory_update`. Any AI tool that supports MCP (Claude Code, Cursor, etc.) could then access your vault's memory from any working directory, automatically. This is essentially what projects like [Chetna](https://github.com/vineetkishore01/Chetna) do with a database backend — the same idea could be built on top of your Markdown files.
+
+**Recommendation:** Start with Option 1. It takes two minutes, works immediately, and covers 90% of use cases. Move to Option 3 only if you find yourself constantly needing vault context from coding projects.
+
 ### VS Code + GitHub Copilot
 Use `COPILOT.md` (a copy of `CLAUDE.md`) in the root directory. Copilot can include it as workspace context.
 
