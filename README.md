@@ -19,11 +19,13 @@ The full guide ([guide.md](guide.md)) covers:
 | Component | What it does |
 |-----------|-------------|
 | **Master document** (`CLAUDE.md`) | Your identity, projects, preferences, and interaction rules — loaded automatically by Claude Code, pasteable into any AI |
-| **Memory folder** (`memory/`) | Structured files for people, projects, glossary, and professional context |
+| **Memory folder** (`memory/`) | Structured files for people, projects, glossary, decisions, and professional context — with an operational index (`ContextSummary.md`) that tells the AI what to load first |
 | **Context summaries** (`ContextSummary.md`) | Semantic index per folder so the AI doesn't need to read every file |
 | **Task list** (`TASKS.md`) | Time-horizoned tasks the AI can query and update |
 | **Wikilinks & graph** | `[[wikilinks]]` with typed relationships (`extends`, `supports`, `contradicts`…) create a navigable knowledge graph — and you can ask the AI to build it for you |
-| **Memory classification** | Each memory file is tagged by type (`fact`, `preference`, `rule`, `project`, `person`) and relevance (`high`, `medium`, `low`) for prioritization and decay |
+| **Memory classification** | Each memory file is tagged by type (`fact`, `preference`, `rule`, `project`, `person`, `decision`) and relevance (`high`, `medium`, `low`) for prioritization and decay |
+| **Decision log** (`memory/decisions/`) | Durable rationale for important changes — so future sessions don't lose the *why* behind past choices |
+| **Maintenance cadence** | Explicit post-session, monthly, and quarterly review routines to keep the system lean and current |
 | **Update protocol** | Instructions so the AI co-maintains the system at the end of each session |
 | **Security guidelines** | What to keep out of the system and why |
 

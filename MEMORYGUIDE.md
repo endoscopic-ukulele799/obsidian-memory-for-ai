@@ -22,7 +22,7 @@ vault/
 ├── TASKS.md               ← Active, recurring, upcoming, and someday tasks
 │
 ├── memory/                     ← Structured memory by domain
-│   ├── ContextSummary.md       ← Operational index: what to load first vs. on demand
+│   ├── ResumenContexto.md      ← Operational index: what to load first vs. on demand
 │   ├── glossary.md             ← Acronyms, internal terms, nicknames
 │   ├── people/                 ← One .md per relevant person
 │   │   ├── person1.md
@@ -30,19 +30,20 @@ vault/
 │   ├── projects/               ← One .md per active project
 │   │   ├── project-a.md
 │   │   └── project-b.md
-│   ├── decisions/              ← Durable decisions and their rationale
-│   │   ├── ContextSummary.md
+│   ├── decisions/              ← Durable decisions and rationale over time
+│   │   ├── ResumenContexto.md
+│   │   ├── Timeline de decisiones.md
 │   │   └── DEC-001 - Example decision.md
 │   └── context/                ← Stable structural context
 │       ├── company.md          ← Professional environment, tools, processes
 │       └── personality.md      ← Personality profile (optional but powerful)
 │
 ├── FolderA/
-│   ├── ContextSummary.md  ← Semantic index of the folder for the AI
+│   ├── ResumenContexto.md ← Semantic index of the folder for the AI
 │   └── (regular notes)
 │
 ├── FolderB/
-│   ├── ContextSummary.md
+│   ├── ResumenContexto.md
 │   └── (regular notes)
 │
 └── ...
@@ -118,7 +119,7 @@ last_reviewed: 2026-03-15
 | `rule` | Instructions the AI must follow | Update protocol, security rules |
 | `project` | An active or past project | Code projects, creative work |
 | `person` | Someone relevant to your context | Family, collaborators, clients |
-| `decision` | Durable rationale for a meaningful change | System change, project direction |
+| `decision` | Durable rationale for a meaningful change | Memory system change, project direction |
 
 **Relevance** signals how important this file is for current sessions:
 
@@ -134,33 +135,16 @@ This is the manual equivalent of importance scoring and memory decay in automate
 
 ---
 
-### `ContextSummary.md` inside `memory/` — Operational memory index
+### `ResumenContexto.md` inside `memory/` — Operational memory index
 
 This file tells the AI how to navigate the memory layer efficiently:
 
-- What to load first (always-relevant files)
-- What to load only when a topic comes up
+- What to load first
+- What to load only when a topic appears
 - Where durable decisions live
 - What has changed structurally in the memory system
 
-Think of it as a router between the master document and the detailed memory files. Without it, the AI tends to over-read or guess. With it, context loading becomes intentional.
-
-```markdown
-# ContextSummary — Memory
-
-## Always load
-- glossary.md — internal vocabulary
-- context/company.md — professional environment
-- context/personality.md — personality profile and interaction preferences
-
-## Load on demand
-- people/ — when a person is mentioned by name or nickname
-- projects/ — when a project is mentioned by codename
-- decisions/ — when the question is about *why* something was changed
-
-## Recent structural changes
-- [date]: [what changed and why]
-```
+Think of it as a router between the master document and the detailed memory files. Without it, the AI tends to over-read. With it, context loading becomes intentional.
 
 ---
 
@@ -252,7 +236,7 @@ last_reviewed: 2026-03-15
 
 ### `decisions/[decision].md` — Decision memory
 
-Use this folder for decisions whose rationale should survive the session where they were made. Not every choice needs a record — only the ones where future-you (or the AI) would ask *"why did we do it this way?"*
+Use this folder for decisions whose rationale should survive the session itself.
 
 ```markdown
 ---
@@ -273,17 +257,17 @@ last_reviewed: 2026-03-15
 [What was chosen]
 
 ## Alternatives considered
-- [Option A — why it was rejected]
-- [Option B — why it was rejected]
+- [Option A]
+- [Option B]
 
 ## Consequences
-- [Positive outcomes]
-- [Tradeoffs accepted]
+- [Positive]
+- [Tradeoff]
 ```
 
-**When to create one:** Only when future sessions would lose important reasoning without it. This is not a diary — it's for durable rationale. Good examples: changing your memory system structure, choosing a tech stack for a project, deciding to drop or restructure a creative project.
+**When to create one:** only when future sessions would lose important reasoning without it. This is not a diary and not a replacement for git history.
 
-**Recommended companion:** A `ContextSummary.md` inside `decisions/` that lists all decisions by date and scope, so the AI can find them without reading every file.
+**Recommended companion note:** `Timeline de decisiones.md` inside `memory/decisions/`, listing decisions by date and scope so the AI can find them quickly.
 
 ---
 
@@ -337,12 +321,12 @@ This is the most powerful and most personal file. If you've done a personality t
 
 ---
 
-## Component 3: `ContextSummary.md` in each folder
+## Component 3: `ResumenContexto.md` in each folder
 
 Each vault folder has a file that acts as a **semantic index** for the AI.
 
 ```markdown
-# Context Summary — [Folder Name]
+# ResumenContexto — [Folder Name]
 
 This folder contains [brief description]. [How it fits in your workflow].
 
@@ -360,7 +344,7 @@ This folder contains [brief description]. [How it fits in your workflow].
 [Progress, last relevant change, notes for the AI]
 ```
 
-**When to use it:** When you ask the AI to work on a specific folder ("review my research notes on X"), point it to the `ContextSummary.md` first. It doesn't need to read every file.
+**When to use it:** When you ask the AI to work on a specific folder ("review my research notes on X"), point it to the `ResumenContexto.md` first. It doesn't need to read every file.
 
 ---
 
@@ -452,7 +436,7 @@ Use `COPILOT.md` (a copy of `CLAUDE.md`) in the root directory. Copilot can incl
 Create a **custom system instruction** (in Settings → Custom Instructions or equivalent) using a condensed version of the master document. For intensive sessions, paste the full `CLAUDE.md` at the start of the chat.
 
 ### Any AI with file access
-Attach `CLAUDE.md` + the `ContextSummary.md` of the relevant folder + the corresponding project file. If the question is about *why* something was changed, attach the relevant file from `memory/decisions/` too.
+Attach `CLAUDE.md` + the `ResumenContexto.md` of the relevant folder + the corresponding project file. If the question is about why something changed, attach the relevant file from `memory/decisions/` too.
 
 ---
 
@@ -466,10 +450,10 @@ Include this at the end of your `CLAUDE.md`:
 Mandatory rule: at the end of each relevant session, update:
 
 1. **CLAUDE.md** — if anything changes about my profile, projects, or preferences
-2. **ContextSummary.md** of the affected folder — reflect changes made
-3. **memory/ContextSummary.md** — if the structure or loading logic of memory changed
-4. **memory/** — update people, project, or decision files if applicable
-5. **TASKS.md** — mark completed tasks or add new ones
+2. **`ResumenContexto.md`** of the affected folder — reflect changes made
+3. **`memory/ResumenContexto.md`** — if the structure or loading logic of memory changed
+4. **`memory/`** — update people, project, or decision files if applicable
+5. **`TASKS.md`** — mark completed tasks or add new ones
 ```
 
 This turns the AI into a co-maintainer of the system. At the end of any working session you can ask: "Update the relevant memory files with what we did today."
@@ -479,8 +463,8 @@ This turns the AI into a co-maintainer of the system. At the end of any working 
 Beyond session-by-session updates, schedule occasional full-vault reviews. Ask the AI to:
 
 - **Find missing wikilinks** — connections between notes that should exist but don't
-- **Update `ContextSummary.md` files** — especially after adding new notes to a folder
-- **Review decision coverage** — ensure important workflow or structural changes are captured in `memory/decisions/`
+- **Update `ResumenContexto.md` files** — especially after adding new notes to a folder
+- **Review decision logs** — ensure important workflow or structural changes are captured in `memory/decisions/`
 - **Flag stale information** — projects marked "active" that haven't been touched in months
 - **Identify orphan notes** — files with no incoming or outgoing links
 - **Review memory relevance** — check `last_reviewed` dates in `memory/` frontmatter, downgrade `relevance` for entries that haven't been relevant in months, and archive or remove `low` relevance files that no longer serve current context
@@ -490,19 +474,21 @@ This kind of structural maintenance is tedious for humans but trivial for an AI 
 
 ### Turn maintenance into a real routine
 
-Don't treat maintenance as an occasional vague intention. Give it explicit cadence:
+Do not treat maintenance as an occasional vague intention. Give it explicit cadence:
 
 - **After an important session** — run a micro-review if the session changed structure, conventions, or project direction
 - **Monthly** — do a light audit of `memory/`
 - **Quarterly** — do a structural review of the whole context system
 
+Recommended actions by cadence:
+
 | Cadence | Scope | Typical actions |
 |---------|-------|-----------------|
-| Post-session | Affected files only | Update notes, adjust `last_reviewed`, update `memory/ContextSummary.md`, record a decision if rationale should persist |
+| Post-session | Affected files only | Update note, adjust `last_reviewed`, update `memory/ResumenContexto.md`, record a decision if rationale should persist |
 | Monthly | `memory/` | Review stale notes, downgrade `relevance`, merge redundancies, add missing links |
-| Quarterly | Whole system | Archive low-value memory, review all summaries, check master doc balance, review decision coverage |
+| Quarterly | Whole system | Archive low-value memory, review summaries, check master doc balance, review decision coverage |
 
-**Tip:** Keep a dedicated checklist note inside `memory/` so the AI can follow the same review pattern every time you ask for maintenance.
+Recommended operational artifact: keep a dedicated checklist note inside `memory/` so the AI can follow the same review pattern every time.
 
 ---
 
@@ -510,8 +496,8 @@ Don't treat maintenance as an occasional vague intention. Give it explicit caden
 
 **At the start of a session:**
 1. The AI loads `CLAUDE.md` automatically (or you attach it)
-2. If the work is on a specific folder, point to its `ContextSummary.md`
-3. If the work involves specific people, projects, or prior decisions, point to the relevant files in `memory/`
+2. If the work is on a specific folder, point to its `ResumenContexto.md`
+3. If the work involves specific people, projects, or prior rationale, point to the relevant files in `memory/`
 
 **During the session:**
 - The AI operates with full context
@@ -532,7 +518,7 @@ Don't try to build the whole system at once. Recommended order:
 3. Add `glossary.md`
 4. Add project files one by one as you use them
 5. Add people profiles as they become relevant
-6. Add `ContextSummary.md` files in folders as needed
+6. Add `ResumenContexto.md` files in folders as needed
 7. Add `memory/decisions/` once you start making changes whose rationale should persist
 
 ### Design principles
@@ -589,7 +575,7 @@ The closest alternative is Notion, but as a proprietary database it's significan
 
 This system grows organically. It's not a one-time setup. Over time:
 
-- `ContextSummary.md` files get enriched with cross-folder analysis
+- `ResumenContexto.md` files get enriched with cross-folder analysis
 - The decision log grows into a usable rationale timeline
 - People profiles gain more nuance
 - The glossary grows with terms you use repeatedly with the AI
