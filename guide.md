@@ -493,11 +493,15 @@ ln -s ~/path/to/vault/CLAUDE.md ~/projects/my-app/CLAUDE.md
 
 The downside: symlinks can break if paths change, and you'll have a `CLAUDE.md` in every project directory.
 
-**Option 3: MCP server / plugin (most powerful, requires code)**
+**Option 3: Cowork plugin (best for Claude Desktop)**
+
+Package the memory system as a Cowork plugin with slash commands (`/memory-load`, `/memory-update`, `/memory-audit`, `/memory-decide`) and an auto-triggering skill. Once installed, the commands are available in every Cowork session regardless of context. See the full step-by-step in **[plugin-guide.md](plugin-guide.md)**.
+
+**Option 4: MCP server (most powerful, requires code)**
 
 Package the memory system as a local MCP server that exposes tools like `memory_read`, `memory_search`, `memory_update`. Any AI tool that supports MCP (Claude Code, Cursor, etc.) could then access your vault's memory from any working directory, automatically. This is essentially what projects like [Chetna](https://github.com/vineetkishore01/Chetna) do with a database backend — the same idea could be built on top of your Markdown files.
 
-**Recommendation:** Start with Option 1. It takes two minutes, works immediately, and covers 90% of use cases. Move to Option 3 only if you find yourself constantly needing vault context from coding projects.
+**Recommendation:** Start with Option 1. It takes two minutes, works immediately, and covers 90% of use cases. If you use Claude Desktop (Cowork) heavily, Option 3 gives you the best experience there. Move to Option 4 only if you need programmatic memory access from custom tools.
 
 ### VS Code + GitHub Copilot
 Use `COPILOT.md` (a copy of `CLAUDE.md`) in the root directory. Copilot can include it as workspace context.
@@ -619,6 +623,7 @@ The rule of thumb: if losing access to a piece of information would cause you fi
 | Tool                    | Compatibility | Method                              |
 |-------------------------|--------------|-------------------------------------|
 | Claude Code (CLI)       | Native       | CLAUDE.md in working directory + `~/.claude/CLAUDE.md` global |
+| Claude Desktop (Cowork) | Native       | Plugin with slash commands — see [plugin-guide.md](plugin-guide.md) |
 | VS Code Copilot         | High         | COPILOT.md + context files          |
 | Claude.ai               | Manual       | Attach or paste at start            |
 | ChatGPT                 | Manual       | Custom Instructions + attach        |

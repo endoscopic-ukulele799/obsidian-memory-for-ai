@@ -44,6 +44,7 @@ That's it. The system grows organically from there.
 | Tool | Integration |
 |------|------------|
 | Claude Code (CLI) | Native — reads `CLAUDE.md` automatically |
+| Claude Desktop (Cowork) | Via plugin — see [plugin-guide.md](plugin-guide.md) |
 | VS Code + GitHub Copilot | `COPILOT.md` as workspace context |
 | Claude.ai / ChatGPT | Paste or attach at session start |
 | Cursor | `.cursorrules` or context files |
@@ -59,7 +60,9 @@ That's it. The system grows organically from there.
 
 ## Read the full guide
 
-👉 **[guide.md](guide.md)**
+👉 **[guide.md](guide.md)** — The complete memory system guide
+
+👉 **[plugin-guide.md](plugin-guide.md)** — How to package the system as a Cowork plugin (slash commands + auto-triggering skill)
 
 ## Acknowledgments
 
