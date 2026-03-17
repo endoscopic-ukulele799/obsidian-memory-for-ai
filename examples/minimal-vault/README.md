@@ -1,0 +1,43 @@
+# Example: Minimal Vault
+
+A complete, working example of the memory system described in the [guide](../../guide.md).
+
+**The persona is fictional.** Elena Voss is an invented art conservator. The vault demonstrates real structure and conventions using a domain (pigment research, museum conservation) that's different enough from software engineering to show the system works for anyone, not just developers.
+
+## What's here
+
+```
+minimal-vault/
+├── CLAUDE.md                          ← Master context document
+├── TASKS.md                           ← Time-horizoned task list
+└── memory/
+    ├── ContextSummary.md              ← What to load first vs. on demand
+    ├── glossary.md                    ← Acronyms, internal terms, nicknames
+    ├── context/
+    │   ├── professional.md            ← Role, lab, tools, team
+    │   └── personality.md             ← Work style and AI interaction preferences
+    ├── people/
+    │   ├── marta-delvaux.md           ← Research collaborator
+    │   └── tobias-ackermann.md        ← Lab colleague
+    ├── projects/
+    │   ├── concordance.md             ← Primary research project
+    │   └── gallery-work.md            ← Current museum assignment
+    └── decisions/
+        ├── ContextSummary.md          ← When to create decisions and log
+        └── DEC-001 - Concordance...   ← Example decision with full rationale
+```
+
+## How to use it
+
+1. **Read through the files** to see how the conventions from the guide look in practice
+2. **Copy the structure** to your own vault and replace the content with yours
+3. Start with just `CLAUDE.md`, `TASKS.md`, and `memory/glossary.md` — add the rest as you need it
+
+## Things to notice
+
+- **CLAUDE.md is under 80 lines.** Dense, scannable, no filler. Everything else lives in `memory/`.
+- **The glossary resolves ambiguity.** "The manuscript" means the Strasbourg MS. "GG" means the museum. The AI won't have to guess.
+- **People profiles include what matters for AI context**, not a full biography. Marta's communication preferences and data format expectations are there because they affect collaboration.
+- **The decision record captures *why*, not just *what*.** DEC-001 explains why Markdown+CSV was chosen over SQLite — so a future session won't suggest the same rejected alternatives.
+- **Wikilinks with relationship verbs** (`supports:`, `applies:`, `related:`) connect files into a navigable graph.
+- **Frontmatter is minimal but consistent.** Type, relevance, last_reviewed on every memory file.

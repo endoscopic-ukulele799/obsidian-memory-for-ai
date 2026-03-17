@@ -10,64 +10,82 @@ AI assistants forget everything between sessions. Every conversation starts from
 
 ## The solution
 
-A simple system of Markdown files inside your Obsidian vault that any AI can read at the start of a session. No plugins required, no vendor lock-in, no proprietary formats. Just plain text that makes your AI *know you*.
+A system of Markdown files inside your Obsidian vault that any AI can read at the start of a session. No plugins, no vendor lock-in, no proprietary formats. Just plain text that makes your AI *know you*.
 
-## What's in the guide
+The full system uses five components that you build incrementally:
 
-The full guide ([guide.md](guide.md)) covers:
-
-| Component | What it does |
-|-----------|-------------|
-| **Master document** (`CLAUDE.md`) | Your identity, projects, preferences, and interaction rules — loaded automatically by Claude Code, pasteable into any AI |
-| **Memory folder** (`memory/`) | Structured files for people, projects, glossary, decisions, and professional context — with an operational index (`ContextSummary.md`) that tells the AI what to load first |
-| **Context summaries** (`ContextSummary.md`) | Semantic index per folder so the AI doesn't need to read every file |
+| Component | Purpose |
+|-----------|---------|
+| **Master document** (`CLAUDE.md`) | Identity, projects, preferences, interaction rules — the AI's entry point |
+| **Memory folder** (`memory/`) | Structured files for people, projects, glossary, decisions, professional context |
+| **Context summaries** | Semantic index per folder so the AI navigates without reading everything |
 | **Task list** (`TASKS.md`) | Time-horizoned tasks the AI can query and update |
-| **Wikilinks & graph** | `[[wikilinks]]` with typed relationships (`extends`, `supports`, `contradicts`…) create a navigable knowledge graph — and you can ask the AI to build it for you |
-| **Memory classification** | Each memory file is tagged by type (`fact`, `preference`, `rule`, `project`, `person`, `decision`) and relevance (`high`, `medium`, `low`) for prioritization and decay |
-| **Decision log** (`memory/decisions/`) | Durable rationale for important changes — so future sessions don't lose the *why* behind past choices |
-| **Maintenance cadence** | Explicit post-session, monthly, and quarterly review routines to keep the system lean and current |
-| **Update protocol** | Instructions so the AI co-maintains the system at the end of each session |
-| **Security guidelines** | What to keep out of the system and why |
+| **Wikilinks & typed relationships** | `[[wikilinks]]` with verbs (`extends`, `supports`, `contradicts`…) that create a navigable knowledge graph |
 
-## Quick start
+Start with just `CLAUDE.md` and `TASKS.md`. Add the rest as you need it.
 
-1. Create a `CLAUDE.md` in your vault root with who you are, your projects, and how you want to be addressed
-2. Add a `TASKS.md` with your current priorities
-3. Create `memory/glossary.md` with your internal vocabulary
-4. Point the AI to these files at the start of each session
-5. At the end of each session, ask: *"Update the relevant memory files with what we did today"*
+## See it in action
 
-That's it. The system grows organically from there.
+The [`examples/minimal-vault/`](examples/minimal-vault/) directory contains a complete working example — a fictional art conservator with research projects, collaborators, a glossary, and a decision record. Copy the structure, replace the content with yours.
 
-## Compatible with
+## Read the full guide
 
-| Tool | Integration |
-|------|------------|
-| Claude Code (CLI) | Native — reads `CLAUDE.md` automatically |
+**[guide.md](guide.md)** covers architecture, every component in detail, integration with different AI tools, the update protocol, and maintenance routines.
+
+**[plugin-guide.md](plugin-guide.md)** explains how to package the system as a Cowork plugin with slash commands and auto-triggering skills for Claude Desktop.
+
+---
+
+## Why plain Markdown instead of a vector database
+
+This is the question I get asked most. The short answer: because the trade-offs favor Markdown for this use case, and the things you give up don't matter as much as they seem.
+
+### What you get
+
+- **Full transparency.** Every piece of context is a file you can read, edit, and version-control. There is no black box deciding what the AI "remembers." When the AI says something wrong, you open the file and fix it.
+- **Zero infrastructure.** No database to host, no embeddings to recompute, no server to keep running. The system works on a plane with no internet.
+- **Portability across AI tools.** The same Markdown files work with Claude Code, Copilot, ChatGPT, Cursor, or any tool that can read text. A vector database locks you into whatever retrieval API it exposes.
+- **Human-readable memory.** Your vault is your second brain *first*, and the AI's memory *second*. You browse it, link it, search it, think with it. A vector store is opaque to you.
+- **Version control.** `git log` shows you exactly what changed, when, and why. Try that with embeddings.
+- **Composable loading.** The `ContextSummary.md` router pattern lets you control exactly what the AI reads and in what order. You're the retrieval algorithm, and you're smarter than cosine similarity at knowing what's relevant to your session.
+
+### What you give up
+
+- **Semantic search over large corpora.** If you have 10,000 notes and need to find "that thing about Byzantine trade routes" without knowing where it is, a vector database will find it faster. This system relies on explicit structure (summaries, glossary, wikilinks) instead of embeddings. At vault sizes under ~500 notes, grep and good organization are faster than any retrieval pipeline.
+- **Automatic relevance scoring.** Vector databases rank results by similarity. Here, you mark relevance manually (`high`/`medium`/`low` in frontmatter) and maintain it through periodic reviews. This is more work. It's also more accurate, because *you* know what's relevant better than an embedding model does.
+- **Automatic memory decay.** Systems like [Chetna](https://github.com/vineetkishore01/Chetna) implement Ebbinghaus-style decay curves in code. Here, decay is manual: you review `last_reviewed` dates and downgrade or archive stale entries. The guide includes explicit maintenance cadences (post-session, monthly, quarterly) to keep this sustainable.
+- **Scaling past thousands of files.** This system is designed for personal context — the 50–500 files that define who you are, what you're working on, and how you think. It's not a replacement for a RAG pipeline over your company's entire knowledge base. It's the *personal layer* that sits on top of whatever else you use.
+
+### When to use what
+
+| Scenario | This system | Vector DB / RAG |
+|----------|-------------|-----------------|
+| Personal context (identity, preferences, projects) | Yes | Overkill |
+| Active project memory (people, decisions, tasks) | Yes | Overkill |
+| Searching 10,000+ documents by semantic meaning | No | Yes |
+| Multi-user shared knowledge base | No | Yes |
+| Context that must be human-readable and editable | Yes | Difficult |
+| Context that must survive across different AI tools | Yes | Vendor-dependent |
+
+The honest take: if you're already running a RAG pipeline for other reasons, this system complements it — it handles the personal, curated context that RAG is bad at. They're not competing solutions; they operate at different layers.
+
+---
+
+## Compatible tools
+
+| Tool | How it works |
+|------|-------------|
+| Claude Code (CLI) | Native — reads `CLAUDE.md` automatically from working directory + `~/.claude/CLAUDE.md` globally |
 | Claude Desktop (Cowork) | Via plugin — see [plugin-guide.md](plugin-guide.md) |
 | VS Code + GitHub Copilot | `COPILOT.md` as workspace context |
 | Claude.ai / ChatGPT | Paste or attach at session start |
 | Cursor | `.cursorrules` or context files |
 | Any AI with file access | Attach the relevant `.md` files |
 
-## Why Obsidian
-
-- **Plain Markdown** — no lock-in, works in any editor
-- **Syncs everywhere** — iCloud, Syncthing, whatever you trust
-- **Human-readable** — it's your second brain, not just the AI's
-- **Graph view** — visualize the connections between your notes
-- **No build step, no dependencies** — just files in folders
-
-## Read the full guide
-
-👉 **[guide.md](guide.md)** — The complete memory system guide
-
-👉 **[plugin-guide.md](plugin-guide.md)** — How to package the system as a Cowork plugin (slash commands + auto-triggering skill)
-
 ## Acknowledgments
 
-The memory classification system (type tagging, relevance scoring, and relationship types between memories) was inspired by [**Chetna**](https://github.com/vineetkishore01/Chetna), a Rust-based memory system for AI agents by [@vineetkishore01](https://github.com/vineetkishore01). Chetna implements these concepts as code (importance scoring, Ebbinghaus decay curves, typed memory relationships in a database). This project adapts the same ideas as pure Markdown conventions — no code required.
+The memory classification system (type tagging, relevance scoring, and relationship types between memories) was inspired by [**Chetna**](https://github.com/vineetkishore01/Chetna), a Rust-based memory system for AI agents by [@vineetkishore01](https://github.com/vineetkishore01). Chetna implements these concepts as code — importance scoring, Ebbinghaus decay curves, typed relationships in a database. This project adapts the same ideas as pure Markdown conventions.
 
 ---
 
-*Developed through real-world daily use with Claude Code. March 2026.*
+*Developed through daily use with Claude Code. March 2026.*

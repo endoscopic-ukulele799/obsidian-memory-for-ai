@@ -5,6 +5,37 @@
 
 ---
 
+## Table of contents
+
+1. [The problem this solves](#the-problem-this-solves)
+2. [General architecture](#general-architecture)
+3. [Component 1: The master document (`CLAUDE.md`)](#component-1-the-master-document-claudemd)
+4. [Component 2: The `memory/` folder](#component-2-the-memory-folder)
+   - [Memory classification and relevance](#memory-classification-and-relevance)
+   - [`ContextSummary.md` — Operational memory index](#contextsummarymd-inside-memory--operational-memory-index)
+   - [`glossary.md` — Internal vocabulary](#glossarymd--internal-vocabulary)
+   - [`people/` — People profiles](#peoplenamedmd--people-profiles)
+   - [`projects/` — Active projects](#projectsprojectmd--active-projects)
+   - [`decisions/` — Decision memory](#decisionsdecisionmd--decision-memory)
+   - [`context/company.md` — Professional environment](#contextcompanymd--professional-environment)
+   - [`context/personality.md` — Personality profile](#contextpersonalitymd--personality-profile-optional)
+5. [Component 3: `ContextSummary.md` in each folder](#component-3-contextsummarymd-in-each-folder)
+6. [Component 4: `TASKS.md`](#component-4-tasksmd)
+7. [Component 5: Wikilinks and the knowledge graph](#component-5-wikilinks-and-the-knowledge-graph)
+8. [How it integrates with AI tools](#how-it-integrates-with-ai-tools)
+   - [Working from a different project directory](#working-from-a-different-project-directory)
+9. [Update protocol](#update-protocol-instructions-for-the-ai)
+   - [Periodic maintenance](#periodic-maintenance-let-the-ai-audit-the-vault)
+   - [Maintenance cadence](#turn-maintenance-into-a-real-routine)
+10. [Typical workflow](#typical-workflow)
+11. [Implementation recommendations](#implementation-recommendations)
+    - [Security](#a-note-on-security)
+12. [Compatible tools](#compatible-tools)
+13. [Why Obsidian and not something else](#why-obsidian-and-not-something-else)
+14. [How the system evolves](#how-the-system-evolves)
+
+---
+
 ## The problem this solves
 
 AI assistants have no memory between sessions. Every conversation starts blank. If you have complex projects, a rich life, and well-defined preferences, this forces you to constantly repeat context — or settle for generic responses.
