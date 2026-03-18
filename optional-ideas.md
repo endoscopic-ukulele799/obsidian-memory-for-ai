@@ -75,4 +75,106 @@
 
 ---
 
+## 📱 Memory Shortcut — Query your memory from your phone
+
+**What it does:** A Cloudflare Worker that lets you query (and update) your Obsidian memory system from your phone using iOS Shortcuts, Android Tasker, or any HTTP client. Ask a question in natural language, get an answer grounded in your memory files — no apps to install.
+
+**Why it's useful:** Your memory system lives on your computer, but questions pop up everywhere. "What do I have this week?", "When is that appointment?", "What was the decision about X?" — now you can ask from your phone and get an answer in seconds, even hands-free via Siri.
+
+**Architecture:**
+```
+Phone (Shortcut / Tasker / HTTP)
+    │
+    │  POST /query   { "q": "What do I have this week?" }
+    ▼
+Cloudflare Worker (free tier)
+    │
+    ├─► GitHub API → reads .md files from a private repo
+    │   (Tier 1 always, Tier 2 based on keywords in the question)
+    │
+    └─► Claude API → generates answer with loaded context
+    │
+    ▼
+JSON response { "answer": "..." }
+```
+
+**How it works:**
+
+1. **Your memory files live in a private GitHub repo.** You can either:
+   - Initialize git directly in your vault with a `.gitignore` that only tracks `memory/` and your task file
+   - Use a separate repo and sync periodically
+
+2. **A Cloudflare Worker** receives questions and:
+   - **Always loads Tier 1** files (glossary, personality, company context, working context)
+   - **Detects keywords** in the question to load Tier 2 files:
+     - People's names → their profile from `people/`
+     - Project names → their file from `projects/`
+     - Task-related words ("this week", "tasks", "appointments") → your task file
+     - Decision-related words ("why did we", "when did we decide") → your decisions timeline
+   - Sends the loaded context + question to Claude API
+   - Returns a clean plain-text answer (Markdown stripped for voice assistants)
+
+3. **Optionally, a `/update` endpoint** lets you modify memory from your phone:
+   - "Add task: buy birthday gift for Maria, April 20" → updates your task file
+   - "Note on Maria: prefers dark chocolate" → appends to the person's file
+   - Safeguards: only whitelisted files are editable, content validation prevents corruption
+
+**Setup overview:**
+
+1. Push your memory files to a private GitHub repo
+2. Deploy the Worker to Cloudflare (free tier is sufficient)
+3. Set three secrets: `MEMORY_TOKEN` (random string you generate), `CLAUDE_API_KEY`, `GITHUB_TOKEN` (read-only PAT)
+4. Create a Shortcut on your phone:
+   - Ask for input → POST to Worker URL with auth header → Show result
+
+**iOS Shortcut steps (Spanish UI: Atajos):**
+
+| Step | Action | Config |
+|------|--------|--------|
+| 1 | Ask for Input | Prompt: "What do you want to ask?" |
+| 2 | URL | `https://your-worker.workers.dev/query` |
+| 3 | Get Contents of URL | POST, headers: `Content-Type: application/json` + `Authorization: Bearer <token>`, body JSON: key `q` → Provided Input |
+| 4 | Get Dictionary Value | Key: `answer` |
+| 5 | Show Result | Dictionary Value |
+
+For voice mode: replace step 1 with **Dictate Text** and step 5 with **Speak Text**.
+
+**Keeping memory in sync:**
+
+If your vault is on a different machine than where you edit, you need sync between vault ↔ GitHub:
+- **Simplest:** Initialize git in your vault root with a selective `.gitignore`. A cron job or launchd agent runs `git pull && git add -A && git commit && git push` every 30 minutes
+- **Alternative:** Use Obsidian Git plugin if your vault is already a git repo
+- Phone updates (via `/update`) arrive at the vault on the next pull cycle
+
+**Keyword detection for Tier 2 loading:**
+
+Map keywords to files in your Worker code. Example:
+
+```javascript
+const PEOPLE_MAP = {
+  'maria': 'memory/people/maria.md',
+  'john':  'memory/people/john.md',
+};
+
+const TASK_KEYWORDS = ['week', 'tasks', 'todo', 'pending', 'appointment'];
+const DECISION_KEYWORDS = ['decided', 'decision', 'why did', 'when did'];
+```
+
+**Update endpoint safeguards:**
+- Whitelist of editable files (e.g., only tasks and people files)
+- People files: append-only (never rewrite)
+- Task file: rewrite with Claude, but abort if result is <50% of original length
+- Empty content is rejected
+
+**Cost:** Effectively free for personal use — Cloudflare Workers free tier (100K requests/day), GitHub API (5K requests/hour), Claude Haiku (~$0.001 per query).
+
+**Customization ideas:**
+- Add a `/status` endpoint that returns your horizon strip or weekly summary without a question
+- Cache Tier 1 files in Cloudflare KV with a 1-hour TTL to reduce GitHub API calls
+- Add more action verbs for better task detection ("buy", "cancel", "book", "call")
+- Support multiple languages in keyword detection
+- Add a confirmation step for `/update` — return the proposed change and require a second call to confirm
+
+---
+
 *Have an idea for this list? Open an issue or PR on [obsidian-memory-for-ai](https://github.com/jrcruciani/obsidian-memory-for-ai).*
