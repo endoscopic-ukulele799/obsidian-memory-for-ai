@@ -36,6 +36,8 @@ The [`examples/minimal-vault/`](examples/minimal-vault/) directory contains a co
 
 **[automation-guide.md](automation-guide.md)** shows how to build standalone agents (using the Anthropic API or GitHub Copilot SDK) that maintain your memory files automatically — session-end updates, scheduled audits, consistency checks — without needing an open chat session.
 
+**[obsidian-cli.md](obsidian-cli.md)** shows how to use the Obsidian CLI (1.12+) for vault health audits, property sweeps, and quick capture from the terminal — no AI context needed.
+
 ---
 
 ## Why plain Markdown instead of a vector database
@@ -80,6 +82,7 @@ The honest take: if you're already running a RAG pipeline for other reasons, thi
 | Claude Code (CLI) | Native — reads `CLAUDE.md` automatically from working directory + `~/.claude/CLAUDE.md` globally |
 | Claude Desktop (Cowork) | Via plugin — see [plugin-guide.md](plugin-guide.md) |
 | VS Code + GitHub Copilot | `COPILOT.md` as workspace context |
+| Obsidian CLI (1.12+) | Native vault commands for auditing, property management, and quick capture — see [obsidian-cli.md](obsidian-cli.md) |
 | Claude.ai / ChatGPT | Paste or attach at session start |
 | Cursor | `.cursorrules` or context files |
 | Any AI with file access | Attach the relevant `.md` files |

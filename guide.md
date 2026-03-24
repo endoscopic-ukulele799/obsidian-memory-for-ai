@@ -728,6 +728,8 @@ Don't treat maintenance as an occasional vague intention. Give it explicit caden
 
 **Tip:** Keep a dedicated checklist note inside `memory/` so the AI can follow the same review pattern every time you ask for maintenance.
 
+**Tip:** If you use Obsidian 1.12+, the CLI can automate many audit tasks — orphan detection, broken links, property sweeps — in seconds from the terminal. See **[obsidian-cli.md](obsidian-cli.md)** for ready-to-use scripts.
+
 ---
 
 ## Typical workflow
